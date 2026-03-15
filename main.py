@@ -7,14 +7,31 @@ import os
 
 app = FastAPI(title="DentConsent Python Backend")
 
-# Allow CORS for the Android App
+# Allow CORS for all origins while supporting credentials
+# Explicit origins for CORS
+origins = [
+    "http://localhost",
+    "http://127.0.0.1",
+    "http://10.161.178.54",
+    "http://10.197.126.54",
+    "http://localhost:80",
+    "http://127.0.0.1:80",
+    "http://10.161.178.54:80",
+    "http://10.197.126.54:80",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["GET", "POST", "OPTIONS", "PUT", "DELETE"],
+    allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.get("/api")
+@app.get("/api/")
+def api_root():
+    return {"message": "DentConsent Python API is running."}
 
 os.makedirs("uploads", exist_ok=True)
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
